@@ -1,98 +1,265 @@
+const runeData = [
+  {
+    name: 'Eternal',
+    chance: 1000000,
+    bonuses: [
+      '100x Energy',
+      '25x Flux',
+      '10x Surge',
+      '1x Voltage',
+      '2x Rarity Speed (2x Max)'
+    ],
+    stats: [
+      { label: 'Energy', type: 'linear', values: [100, 200, 400, 800, 1600] },
+      { label: 'Rarity Speed', type: 'linear', base: 1, growth: 2, cap: 2 }
+    ]
+  },
+  {
+    name: 'Oblivion',
+    chance: 2500000,
+    bonuses: [
+      '150x Energy',
+      '50x Flux',
+      '25x Surge',
+      '5x Voltage',
+      '1x Chips',
+      '1x Passive Luck (1x Max)'
+    ],
+    stats: [
+      { label: 'Energy', type: 'linear', values: [150, 300, 600, 1200, 2400] },
+      { label: 'Passive Luck', type: 'linear', base: 1, growth: 1, cap: 1 }
+    ]
+  },
+  {
+    name: 'Umbralith',
+    chance: 10000000,
+    bonuses: [
+      '250x Energy',
+      '150x Flux',
+      '100x Surge',
+      '50x Voltage',
+      '2x Chips',
+      '0.5x Watts (10x Max)',
+      '5x Wood (50x Max)',
+      '0.5x Tree Damage (5x Max)',
+      'Secret Upgrade'
+    ],
+    stats: [
+      { label: 'Energy', type: 'linear', values: [250, 500, 1000, 2000, 4000] },
+      { label: 'Watts', type: 'linear', base: 0.5, growth: 1, cap: 10 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
+      { label: 'Tree Damage', type: 'linear', base: 0.5, growth: 1, cap: 5 }
+    ]
+  },
+  {
+    name: 'Nuclear',
+    chance: 20000000,
+    bonuses: [
+      '500x Energy',
+      '250x Flux',
+      '200x Surge',
+      '100x Voltage',
+      '5x Chips',
+      '1x Watts (10x Max)',
+      '2x Passive Speed (2x Max)',
+      '2x Rune Speed (2x Max)'
+    ],
+    stats: [
+      { label: 'Energy', type: 'linear', values: [500, 1000, 2000, 4000, 8000] },
+      { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
+      { label: 'Passive Speed', type: 'linear', base: 2, growth: 1, cap: 2 },
+      { label: 'Rune Speed', type: 'linear', base: 2, growth: 1, cap: 2 }
+    ]
+  },
+  {
+    name: 'Aero',
+    chance: 25000000,
+    bonuses: [
+      '300x Energy',
+      '175x Flux',
+      '125x Surge',
+      '100x Voltage',
+      '1x Watts (10x Max)',
+      '5x Wood (50x Max)',
+      '1x Clovers (10x Max)',
+      'Secret Stat'
+    ],
+    stats: [
+      { label: 'Energy', type: 'linear', values: [300, 600, 900, 1200, 1500] },
+      { label: 'Watts', type: 'exponential', base: 1, growth: 0.0001, cap: 120000000 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
+      { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
+    ]
+  }
+];
+
+function formatBonuses(bonuses) {
+  return `<ul>${bonuses.map(b => `<li>${b}</li>`).join('')}</ul>`;
+}
+
+function drawExponentialGraph(id, stat) {
+  const container = document.getElementById(id);
+  if (!container) return;
+
+  container.innerHTML = `<canvas></canvas>`;
+  const ctx = container.querySelector('canvas').getContext('2d');
+  if (!ctx) return;
+
+  let maxCount = 50000; 
+  if (stat.cap !== undefined) {
+    const logBase = Math.log2(stat.cap / stat.base);
+    if (!isFinite(logBase) || logBase < 0) {
+      maxCount = 50000;
+    } else {
+      maxCount = Math.ceil((logBase / stat.growth) + 1);
+      maxCount = Math.min(maxCount, 10000000000); 
+    }
+  }
+
+  const points = [];
+  let increment = 1;
+  if (maxCount >= 10000000) increment = 10000;
+  else if (maxCount >= 1000000) increment = 1000;
+  else if (maxCount >= 100000) increment = 100;
+  else if (maxCount >= 10000) increment = 10;
+
+  for (let i = 1; i <= maxCount; i += increment) {
+    let value = stat.base * Math.pow(2, stat.growth * (i - 1));
+    points.push([i, value]);
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        label: stat.label,
+        data: points,
+        borderColor: '#00aaff',
+        backgroundColor: 'rgba(0, 170, 255, 0.1)',
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: true,
+        tension: 0.2
+      }]
+    },
+    options: {
+      animation: false,
+      //parsing: false,
+      normalized: true,
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: {
+          mode: 'nearest',
+          intersect: false,
+          callbacks: {
+            label: function(context) {
+              const x = context.parsed.x;
+              const y = context.parsed.y;
+              return `Count: ${formatValue(x)}, Value: ${formatValue(y)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: 0,
+          title: { display: true, text: 'Count' },
+          grid: { color: '#333' },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10,
+            callback: function(value) {
+              return formatValue(value);
+            }
+          }
+        },
+        y: {
+          title: { display: 'true', text: 'Value' },
+          grid: { color: '#333' },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 8,
+            callback: function(value) {
+              return formatValue(value);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function formatValue(value) {
+  if (value === 0) return '0';
+  if (value < 1000) return value.toLocaleString();
+  if (value < 1000000) return (value / 1000).toFixed(1) + 'K';
+  return (value / 1000000).toFixed(1) + 'M';
+}
+
+function renderRuneList() {
+  const hideInstant = document.getElementById('hideInstantToggle').checked;
+  const showGraphs = document.getElementById('showGraphsToggle').checked;
+  const rps = parseFloat(document.getElementById('rps').value);
+  const runeClone = parseFloat(document.getElementById('runeClone').value);
+  const realRPS = (rps > 0 && runeClone > 0) ? rps / runeClone : 0;
+
+  const runeListDiv = document.getElementById('runeList');
+  runeListDiv.innerHTML = runeData.map((rune, idx) => {
+    let isInstant = false;
+    if (realRPS > 0 && rune.chance / realRPS < 1) isInstant = true;
+    if (hideInstant && isInstant) return '';
+
+    const exponentialStats = rune.stats.filter(stat => stat.type === 'exponential');
+    let graphsHtml = '';
+    if (showGraphs && exponentialStats.length > 0) {
+      graphsHtml = exponentialStats.map((stat, sidx) =>
+        `<div style="margin-top:12px;">
+          <b>${stat.label}</b>
+          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:500px;height:220px;"></div>
+        </div>`
+      ).join('');
+    }
+
+    return `<div class="output" style="margin-top:16px; text-align:left;">
+      <b>${rune.name}</b> <span style="color:#aaa;">(1/${rune.chance.toLocaleString()})</span>
+      ${isInstant ? '<span style="color:#6f6;">Instant</span>' : ''}
+      <br><b>Bonuses:</b> ${formatBonuses(rune.bonuses)}
+      ${graphsHtml}
+    </div>`;
+  }).join('');
+
+  if (showGraphs) {
+    runeData.forEach((rune, idx) => {
+      const exponentialStats = rune.stats.filter(stat => stat.type === 'exponential');
+      exponentialStats.forEach((stat, sidx) => {
+        const graphId = `rune-graph-${idx}-${sidx}`;
+        if (document.getElementById(graphId)) {
+          drawExponentialGraph(graphId, stat);
+        }
+      });
+    });
+  }
+}
+
 document.getElementById('calculateBtn').addEventListener('click', function() {
   const rps = parseFloat(document.getElementById('rps').value);
   const runeClone = parseFloat(document.getElementById('runeClone').value);
-  const runeType = parseInt(document.getElementById('runeType').value);
   const output = document.getElementById('output');
 
-  if (isNaN(rps) || isNaN(runeClone) || isNaN(runeType) || rps <= 0 || runeClone <= 0) {
+  if (isNaN(rps) || isNaN(runeClone) || rps <= 0 || runeClone <= 0) {
     output.textContent = 'Please enter valid positive numbers for RPS and Rune Clone.';
+    renderRuneList();
     return;
   }
 
-  // Calculate real RPS as RPS / Rune Clone
   const realRPS = rps / runeClone;
-  const totalSeconds = runeType / realRPS;
-
-  let formattedTime = '';
-  if (totalSeconds < 60) {
-    formattedTime = `${Math.round(totalSeconds)} seconds`;
-  } else if (totalSeconds < 3600) {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = Math.round(totalSeconds % 60);
-    formattedTime = `${mins} minutes${secs > 0 ? `, ${secs} seconds` : ''}`;
-  } else {
-    const hrs = Math.floor(totalSeconds / 3600);
-    const mins = Math.floor((totalSeconds % 3600) / 60);
-    const secs = Math.round(totalSeconds % 60);
-    formattedTime = `${hrs} hours${mins > 0 ? `, ${mins} minutes` : ''}${secs > 0 ? `, ${secs} seconds` : ''}`;
-  }
-
-  const runeNames = {
-    1000000: 'Eternal',
-    2500000: 'Oblivion',
-    10000000: 'Umbralith',
-    20000000: 'Nuclear',
-    25000000: 'Aero'
-  };
-  const runeLabel = runeNames[runeType] || 'Rune';
-  let stats = '';
-  // Rune stats template
-  const runeStats = {
-    1000000: `<b> Bonuses:</b><ul>
-      <li>100x Energy</li>
-      <li>25x Flux</li>
-      <li>10x Surge</li>
-      <li>1x Voltage</li>
-      <li>2x Rarity Speed (2x Max)</li>
-    </ul>`,
-    2500000: `<b>Bonuses:</b><ul>
-      <li>150x Energy</li>
-      <li>50x Flux</li>
-      <li>25x Surge</li>
-      <li>5x Voltage</li>
-      <li>1x Chips</li>
-      <li>1x Passive Luck (1x Max)</li>
-    </ul>`,
-    10000000: `<b>Bonuses:</b><ul>
-      <li>250x Energy</li>
-      <li>150 Flux</li>
-      <li>100x Surge</li>
-      <li>50x Voltage</li>
-      <li>2x Chips</li>
-      <li>0.5x Watts (10x Max)</li>
-      <li>5x Wood (50x Max)</li>
-      <li>0.5x Tree Damage (5x Max)</li>
-      <li>Secret Upgrade</li>
-    </ul>`,
-    20000000: `<b>Bonuses:</b><ul>
-      <li>500x Energy</li>
-      <li>250x Flux</li>
-      <li>200x Surge</li>
-      <li>100x Voltage</li>
-      <li>5x Chips</li>
-      <li>1x Watts (10x Max)</li>
-      <li>2x Passive Speed (2x Max)</li>
-      <li>2x Rune Speed (2x Max)</li>
-    </ul>`,
-    25000000: `<b>Bonuses:</b><ul>
-      <li>300x Energy</li>
-      <li>175x Flux</li>
-      <li>125x Surge</li>
-      <li>100x Voltage</li>
-      <li>1x Watts (10x Max)</li>
-      <li>5x Wood (50x Max)</li>
-      <li>1x Clovers (10x Max)</li>
-      <li>Secret Stat</li>
-    </ul>`
-  };
-  if (runeStats[runeType]) {
-    stats = `<br><br>${runeStats[runeType]}`;
-  }
-
-  output.innerHTML = `To get <b>1 ${runeLabel}</b>:<br>
-    With RPS: <b>${rps}</b> and Rune Clone: <b>${runeClone}</b><br>
-    <b>Real RPS: ${realRPS.toFixed(2)}</b><br>
-    <b>~${formattedTime}</b>${stats}`;
+  output.innerHTML = `<b>Real RPS: ${realRPS.toFixed(2)}</b>`;
+  renderRuneList();
 });
 
+document.getElementById('hideInstantToggle').addEventListener('change', renderRuneList);
+document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
+renderRuneList();
