@@ -263,3 +263,4 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
+
