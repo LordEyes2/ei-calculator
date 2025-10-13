@@ -38,7 +38,7 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
   let stats = '';
   // Rune stats template
   const runeStats = {
-    1000000: `<b>Bonuses:</b><ul>
+    1000000: `<b style="color: blue;"> Bonuses:</b><ul>
       <li>100x Energy</li>
       <li>25x Flux</li>
       <li>10x Surge</li>
@@ -94,3 +94,4 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
     <b>Real RPS: ${realRPS.toFixed(2)}</b><br>
     <b>~${formattedTime}</b>${stats}`;
 });
+
