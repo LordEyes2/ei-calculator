@@ -6,6 +6,7 @@
   <title>Rune Calculator</title>
   <link rel="stylesheet" href="design.css">
   <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -16,18 +17,21 @@
         <input type="number" id="rps" min="0" step="any" placeholder="Enter RPS">
         <label for="runeClone">Rune Clone:</label>
         <input type="number" id="runeClone" min="0" step="any" placeholder="Enter Rune Clone">
-        <label for="runeType">Rune Type:</label>
-        <select id="runeType">
-          <option value="1000000">Eternal (1/1M)</option>
-          <option value="2500000">Oblivion (1/2.5M)</option>
-          <option value="10000000">Umbralith (1/10M)</option>
-          <option value="20000000">Nuclear (1/20M)</option>
-          <option value="25000000">Aero (1/25M)</option>
-        </select>
         <button id="calculateBtn">Calculate</button>
       </div>
       <div class="output" id="output"></div>
     </div>
+    <div style="margin-top:32px;">
+      <label>
+        <input type="checkbox" id="hideInstantToggle">
+        Hide Instant
+      </label>
+      <label style="margin-left:24px;">
+        <input type="checkbox" id="showGraphsToggle" checked>
+        Show Graphs
+      </label>
+    </div>
+    <div id="runeList"></div>
   </div>
   <script src="main.js"></script>
 </body>
