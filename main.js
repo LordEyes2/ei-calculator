@@ -86,11 +86,126 @@ const runeData = [
     ],
     stats: [
       { label: 'Energy', type: 'linear', values: [300, 600, 900, 1200, 1500] },
-      { label: 'Watts', type: 'exponential', base: 1, growth: 1.0000015, cap: 100000 }, // Updated growth
+      { label: 'Watts', type: 'exponential', base: 1, growth: 1.0000015, cap: 100000 },
       { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
       { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
     ]
   }
+];
+
+const suffixes = [
+  { suffix: 'uce', multiplier: 1e306 },
+  { suffix: 'ce', multiplier: 1e303 },
+  { suffix: 'nonng', multiplier: 1e300 },
+  { suffix: 'ocng', multiplier: 1e297 },
+  { suffix: 'spng', multiplier: 1e294 },
+  { suffix: 'sxng', multiplier: 1e291 },
+  { suffix: 'qnng', multiplier: 1e288 },
+  { suffix: 'qdng', multiplier: 1e285 },
+  { suffix: 'tng', multiplier: 1e282 },
+  { suffix: 'dng', multiplier: 1e279 },
+  { suffix: 'ung', multiplier: 1e276 },
+  { suffix: 'ng', multiplier: 1e273 },
+  { suffix: 'noog', multiplier: 1e270 },
+  { suffix: 'ocog', multiplier: 1e267 },
+  { suffix: 'spog', multiplier: 1e264 },
+  { suffix: 'sxog', multiplier: 1e261 },
+  { suffix: 'qnog', multiplier: 1e258 },
+  { suffix: 'qdog', multiplier: 1e255 },
+  { suffix: 'tog', multiplier: 1e252 },
+  { suffix: 'dog', multiplier: 1e249 },
+  { suffix: 'uog', multiplier: 1e246 },
+  { suffix: 'og', multiplier: 1e243 },
+  { suffix: 'nosg', multiplier: 1e240 },
+  { suffix: 'ocsg', multiplier: 1e237 },
+  { suffix: 'spsg', multiplier: 1e234 },
+  { suffix: 'sxsg', multiplier: 1e231 },
+  { suffix: 'qnsg', multiplier: 1e228 },
+  { suffix: 'qdsg', multiplier: 1e225 },
+  { suffix: 'tsg', multiplier: 1e222 },
+  { suffix: 'dsg', multiplier: 1e219 },
+  { suffix: 'usg', multiplier: 1e216 },
+  { suffix: 'sg', multiplier: 1e213 },
+  { suffix: 'nosg', multiplier: 1e210 },
+  { suffix: 'ocsg', multiplier: 1e207 },
+  { suffix: 'spsg', multiplier: 1e204 },
+  { suffix: 'sxsg', multiplier: 1e201 },
+  { suffix: 'qnsg', multiplier: 1e198 },
+  { suffix: 'qdsg', multiplier: 1e195 },
+  { suffix: 'tsg', multiplier: 1e192 },
+  { suffix: 'dsg', multiplier: 1e189 },
+  { suffix: 'usg', multiplier: 1e186 },
+  { suffix: 'sg', multiplier: 1e183 },
+  { suffix: 'noqg', multiplier: 1e180 },
+  { suffix: 'ocqg', multiplier: 1e177 },
+  { suffix: 'spqg', multiplier: 1e174 },
+  { suffix: 'sxqg', multiplier: 1e171 },
+  { suffix: 'qnqg', multiplier: 1e168 },
+  { suffix: 'qdqg', multiplier: 1e165 },
+  { suffix: 'tqg', multiplier: 1e162 },
+  { suffix: 'dqg', multiplier: 1e159 },
+  { suffix: 'uqg', multiplier: 1e156 },
+  { suffix: 'qg', multiplier: 1e153 },
+  { suffix: 'noqg', multiplier: 1e150 },
+  { suffix: 'ocqg', multiplier: 1e147 },
+  { suffix: 'spqg', multiplier: 1e144 },
+  { suffix: 'sxqg', multiplier: 1e141 },
+  { suffix: 'qnqg', multiplier: 1e138 },
+  { suffix: 'qdqg', multiplier: 1e135 },
+  { suffix: 'tqg', multiplier: 1e132 },
+  { suffix: 'dqg', multiplier: 1e129 },
+  { suffix: 'uqg', multiplier: 1e126 },
+  { suffix: 'qg', multiplier: 1e123 },
+  { suffix: 'notg', multiplier: 1e120 },
+  { suffix: 'octg', multiplier: 1e117 },
+  { suffix: 'sptg', multiplier: 1e114 },
+  { suffix: 'sxtg', multiplier: 1e111 },
+  { suffix: 'qntg', multiplier: 1e108 },
+  { suffix: 'qdtg', multiplier: 1e105 },
+  { suffix: 'ttg', multiplier: 1e102 },
+  { suffix: 'dtg', multiplier: 1e99 },
+  { suffix: 'utg', multiplier: 1e96 },
+  { suffix: 'tg', multiplier: 1e93 },
+  { suffix: 'novg', multiplier: 1e90 },
+  { suffix: 'ocvg', multiplier: 1e87 },
+  { suffix: 'spvg', multiplier: 1e84 },
+  { suffix: 'sxvg', multiplier: 1e81 },
+  { suffix: 'qnvg', multiplier: 1e78 },
+  { suffix: 'qdvg', multiplier: 1e75 },
+  { suffix: 'tvg', multiplier: 1e72 },
+  { suffix: 'dvg', multiplier: 1e69 },
+  { suffix: 'uvg', multiplier: 1e66 },
+  { suffix: 'vg', multiplier: 1e63 },
+  { suffix: 'novt', multiplier: 1e90 },
+  { suffix: 'ocvt', multiplier: 1e87 },
+  { suffix: 'spvt', multiplier: 1e84 },
+  { suffix: 'sxvt', multiplier: 1e81 },
+  { suffix: 'qnvt', multiplier: 1e78 },
+  { suffix: 'qdvt', multiplier: 1e75 },
+  { suffix: 'tvt', multiplier: 1e72 },
+  { suffix: 'dvt', multiplier: 1e69 },
+  { suffix: 'uvt', multiplier: 1e66 },
+  { suffix: 'vt', multiplier: 1e63 },
+  { suffix: 'node', multiplier: 1e60 },
+  { suffix: 'ocde', multiplier: 1e57 },
+  { suffix: 'spde', multiplier: 1e54 },
+  { suffix: 'sxde', multiplier: 1e51 },
+  { suffix: 'qnde', multiplier: 1e48 },
+  { suffix: 'qdde', multiplier: 1e45 },
+  { suffix: 'tde', multiplier: 1e42 },
+  { suffix: 'dde', multiplier: 1e39 },
+  { suffix: 'ude', multiplier: 1e36 },
+  { suffix: 'de', multiplier: 1e33 },
+  { suffix: 'no', multiplier: 1e30 },
+  { suffix: 'oc', multiplier: 1e27 },
+  { suffix: 'sp', multiplier: 1e24 },
+  { suffix: 'sx', multiplier: 1e21 },
+  { suffix: 'qn', multiplier: 1e18 },
+  { suffix: 'qd', multiplier: 1e15 },
+  { suffix: 't', multiplier: 1e12 },
+  { suffix: 'b', multiplier: 1e9 },
+  { suffix: 'm', multiplier: 1e6 },
+  { suffix: 'k', multiplier: 1e3 }
 ];
 
 function formatBonuses(bonuses) {
@@ -104,22 +219,18 @@ function drawExponentialGraph(id, stat) {
     return;
   }
 
-  // Remove existing canvas if any
   container.innerHTML = '<canvas></canvas>';
   const canvas = container.querySelector('canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // Calculate maxCount based on cap or a default threshold
-  let maxCount = 50000; // Default max if no cap or calculation fails
+  let maxCount = 50000;
   if (stat.cap !== undefined && stat.type === 'exponential') {
-    // For new exponential model: value = base * (1.0000015 ^ count) <= cap
-    // Solve for maxCount: log(cap / base) / log(1.0000015)
     const logBase = Math.log(stat.cap / stat.base) / Math.log(1.0000015);
     if (isFinite(logBase) && logBase > 0) {
       maxCount = Math.ceil(logBase);
     }
-    maxCount = Math.min(maxCount, 50000000); // Cap at 50M for performance
+    maxCount = Math.min(maxCount, 50000000);
   }
 
   const data = [];
@@ -129,11 +240,10 @@ function drawExponentialGraph(id, stat) {
   else if (maxCount >= 100000) increment = 100;
   else if (maxCount >= 10000) increment = 10;
 
-  // Start at count = 0 with initial value
   data.push({ x: 0, y: stat.base });
   for (let i = 1; i <= maxCount; i += increment) {
-    const value = stat.base * Math.pow(1.0000015, i); // Use 1.0000015 ^ count
-    data.push({ x: i, y: Math.min(value, stat.cap) }); // Apply cap
+    const value = stat.base * Math.pow(1.0000015, i);
+    data.push({ x: i, y: Math.min(value, stat.cap) });
   }
 
   new Chart(ctx, {
@@ -200,19 +310,51 @@ function drawExponentialGraph(id, stat) {
   });
 }
 
-function formatValue(value) {
+function formatValue(value, originalSuffix = null) {
   if (value === 0) return '0';
   if (value < 1000) return value.toLocaleString();
-  if (value < 1000000) return (value / 1000).toFixed(1) + 'K';
-  return (value / 1000000).toFixed(1) + 'M';
+  if (originalSuffix) {
+    const suffixObj = suffixes.find(s => s.suffix === originalSuffix);
+    if (suffixObj) {
+      return (value / suffixObj.multiplier).toFixed(1) + originalSuffix;
+    }
+  }
+  const suffixMap = new Map(suffixes.map(s => [s.multiplier, s.suffix]));
+  for (let i = 0; i < suffixes.length; i++) {
+    const suffix = suffixes[i];
+    if (value >= suffix.multiplier && (i === 0 || value < suffixes[i - 1].multiplier)) {
+      return (value / suffix.multiplier).toFixed(1) + suffix.suffix;
+    }
+  }
+  return value.toLocaleString(); // Fallback
+}
+
+function parseAbbreviatedNumber(str) {
+  if (!str || typeof str !== 'string') return { value: 0, suffix: '' };
+  const input = str.trim().toLowerCase();
+  const match = input.match(/(-?\d*\.?\d+)?(.*)/);
+  if (!match || !match[1]) return { value: 0, suffix: '' };
+
+  const num = parseFloat(match[1]) || 0;
+  const suffixStr = match[2] || '';
+
+  let suffix = null;
+  for (let len = suffixStr.length; len > 0; len--) {
+    const testSuffix = suffixStr.substring(0, len);
+    suffix = suffixes.find(s => s.suffix === testSuffix);
+    if (suffix) break;
+  }
+
+  const multiplier = suffix ? suffix.multiplier : 1;
+  return { value: num * multiplier, suffix: suffix ? suffix.suffix : '' };
 }
 
 function renderRuneList() {
   const hideInstant = document.getElementById('hideInstantToggle').checked;
   const showGraphs = document.getElementById('showGraphsToggle').checked;
-  const rps = parseFloat(document.getElementById('rps').value);
-  const runeClone = parseFloat(document.getElementById('runeClone').value);
-  const realRPS = (rps > 0 && runeClone > 0) ? rps / runeClone : 0;
+  const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
+  const runeCloneResult = parseAbbreviatedNumber(document.getElementById('runeClone').value);
+  const realRPS = (rpsResult.value > 0 && runeCloneResult.value > 0) ? rpsResult.value / runeCloneResult.value : 0;
 
   const runeListDiv = document.getElementById('runeList');
   runeListDiv.innerHTML = runeData.map((rune, idx) => {
@@ -232,7 +374,7 @@ function renderRuneList() {
     }
 
     return `<div class="output" style="margin-top:16px; text-align:left;">
-      <b>${rune.name}</b> <span style="color:#aaa;">(1/${rune.chance.toLocaleString()})</span>
+      <b>${rune.name}</b> <span style="color:#aaa;">(1/${formatValue(rune.chance)})</span>
       ${isInstant ? '<span style="color:#6f6;">Instant</span>' : ''}
       <br><b>Bonuses:</b> ${formatBonuses(rune.bonuses)}
       ${graphsHtml}
@@ -253,18 +395,18 @@ function renderRuneList() {
 }
 
 document.getElementById('calculateBtn').addEventListener('click', function() {
-  const rps = parseFloat(document.getElementById('rps').value);
-  const runeClone = parseFloat(document.getElementById('runeClone').value);
+  const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
+  const runeCloneResult = parseAbbreviatedNumber(document.getElementById('runeClone').value);
   const output = document.getElementById('output');
 
-  if (isNaN(rps) || isNaN(runeClone) || rps <= 0 || runeClone <= 0) {
+  if (isNaN(rpsResult.value) || isNaN(runeCloneResult.value) || rpsResult.value <= 0 || runeCloneResult.value <= 0) {
     output.textContent = 'Please enter valid positive numbers for RPS and Rune Clone.';
     renderRuneList();
     return;
   }
 
-  const realRPS = rps / runeClone;
-  output.innerHTML = `<b>Real RPS: ${realRPS.toFixed(2)}</b>`;
+  const realRPS = rpsResult.value / runeCloneResult.value;
+  output.innerHTML = `<b>Real RPS: ${formatValue(realRPS, rpsResult.suffix || runeCloneResult.suffix)}</b>`;
   renderRuneList();
 });
 
