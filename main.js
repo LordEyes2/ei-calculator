@@ -86,7 +86,7 @@ const runeData = [
     ],
     stats: [
       { label: 'Energy', type: 'linear', values: [300, 600, 900, 1200, 1500] },
-      { label: 'Watts', type: 'exponential', base: 1, growth: 0.0001, cap: 120000000 },
+      { label: 'Watts', type: 'exponential', base: 1, growth: 1.0000015, cap: 100000 }, // Updated growth
       { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
       { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
     ]
@@ -99,33 +99,41 @@ function formatBonuses(bonuses) {
 
 function drawExponentialGraph(id, stat) {
   const container = document.getElementById(id);
-  if (!container) return;
-
-  container.innerHTML = `<canvas></canvas>`;
-  const ctx = container.querySelector('canvas').getContext('2d');
-  if (!ctx) return;
-
-  let maxCount = 50000; 
-  if (stat.cap !== undefined) {
-    const logBase = Math.log2(stat.cap / stat.base);
-    if (!isFinite(logBase) || logBase < 0) {
-      maxCount = 50000;
-    } else {
-      maxCount = Math.ceil((logBase / stat.growth) + 1);
-      maxCount = Math.min(maxCount, 10000000000); 
-    }
+  if (!container) {
+    console.error(`Container ${id} not found`);
+    return;
   }
 
-  const points = [];
+  // Remove existing canvas if any
+  container.innerHTML = '<canvas></canvas>';
+  const canvas = container.querySelector('canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  // Calculate maxCount based on cap or a default threshold
+  let maxCount = 50000; // Default max if no cap or calculation fails
+  if (stat.cap !== undefined && stat.type === 'exponential') {
+    // For new exponential model: value = base * (1.0000015 ^ count) <= cap
+    // Solve for maxCount: log(cap / base) / log(1.0000015)
+    const logBase = Math.log(stat.cap / stat.base) / Math.log(1.0000015);
+    if (isFinite(logBase) && logBase > 0) {
+      maxCount = Math.ceil(logBase);
+    }
+    maxCount = Math.min(maxCount, 50000000); // Cap at 50M for performance
+  }
+
+  const data = [];
   let increment = 1;
   if (maxCount >= 10000000) increment = 10000;
   else if (maxCount >= 1000000) increment = 1000;
   else if (maxCount >= 100000) increment = 100;
   else if (maxCount >= 10000) increment = 10;
 
+  // Start at count = 0 with initial value
+  data.push({ x: 0, y: stat.base });
   for (let i = 1; i <= maxCount; i += increment) {
-    let value = stat.base * Math.pow(2, stat.growth * (i - 1));
-    points.push([i, value]);
+    const value = stat.base * Math.pow(1.0000015, i); // Use 1.0000015 ^ count
+    data.push({ x: i, y: Math.min(value, stat.cap) }); // Apply cap
   }
 
   new Chart(ctx, {
@@ -133,7 +141,7 @@ function drawExponentialGraph(id, stat) {
     data: {
       datasets: [{
         label: stat.label,
-        data: points,
+        data: data,
         borderColor: '#00aaff',
         backgroundColor: 'rgba(0, 170, 255, 0.1)',
         pointRadius: 0,
@@ -144,9 +152,9 @@ function drawExponentialGraph(id, stat) {
     },
     options: {
       animation: false,
-      //parsing: false,
       normalized: true,
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: true },
         tooltip: {
@@ -176,14 +184,15 @@ function drawExponentialGraph(id, stat) {
           }
         },
         y: {
-          title: { display: 'true', text: 'Value' },
+          title: { display: true, text: 'Value' },
           grid: { color: '#333' },
           ticks: {
             autoSkip: true,
             maxTicksLimit: 8,
             callback: function(value) {
               return formatValue(value);
-            }
+            },
+            beginAtZero: true
           }
         }
       }
@@ -217,7 +226,7 @@ function renderRuneList() {
       graphsHtml = exponentialStats.map((stat, sidx) =>
         `<div style="margin-top:12px;">
           <b>${stat.label}</b>
-          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:500px;height:220px;"></div>
+          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:400px;height:220px;"></div>
         </div>`
       ).join('');
     }
@@ -263,5 +272,3 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
-
-
