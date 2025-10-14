@@ -264,3 +264,4 @@ document.getElementById('showGraphsToggle').addEventListener('change', renderRun
 
 renderRuneList();
 
+
