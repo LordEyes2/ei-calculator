@@ -207,6 +207,40 @@ function formatBonuses(bonuses) {
   return `<ul>${bonuses.map(b => `<li><code>${b}</code></li>`).join('')}</ul>`;
 }
 
+function formatTime(seconds) {
+  if (seconds <= 0) return 'Instant';
+  const parts = [];
+  const millenniums = Math.floor(seconds / 31536000000);
+  if (millenniums > 0) {
+    parts.push(`${millenniums}M`);
+    seconds %= 31536000000;
+  }
+  const years = Math.floor(seconds / 31536000);
+  if (years > 0) {
+    parts.push(`${years}y`);
+    seconds %= 31536000;
+  }
+  const days = Math.floor(seconds / 86400);
+  if (days > 0) {
+    parts.push(`${days}d`);
+    seconds %= 86400;
+  }
+  const hours = Math.floor(seconds / 3600);
+  if (hours > 0) {
+    parts.push(`${hours}h`);
+    seconds %= 3600;
+  }
+  const minutes = Math.floor(seconds / 60);
+  if (minutes > 0) {
+    parts.push(`${minutes}m`);
+    seconds %= 60;
+  }
+  if (seconds > 0) {
+    parts.push(`${Math.round(seconds)}s`);
+  }
+  return parts.join(' ');
+}
+
 function drawExponentialGraph(id, stat) {
   const container = document.getElementById(id);
   if (!container) {
@@ -348,13 +382,17 @@ function renderRuneList() {
   const hideInstant = document.getElementById('hideInstantToggle').checked;
   const showGraphs = document.getElementById('showGraphsToggle').checked;
   const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
-  const runeCloneResult = parseAbbreviatedNumber(document.getElementById('runeClone').value);
-  const realRPS = (rpsResult.value > 0 && runeCloneResult.value > 0) ? rpsResult.value / runeCloneResult.value : 0;
+  const rps = rpsResult.value;
 
   const runeListDiv = document.getElementById('runeList');
   runeListDiv.innerHTML = runeData.map((rune, idx) => {
     let isInstant = false;
-    if (realRPS > 0 && rune.chance / realRPS < 1) isInstant = true;
+    let timeToGet = 'N/A';
+    if (rps > 0) {
+      const seconds = rune.chance / rps;
+      timeToGet = formatTime(seconds);
+      if (seconds < 1) isInstant = true;
+    }
     if (hideInstant && isInstant) return '';
 
     const exponentialStats = rune.stats.filter(stat => stat.type === 'exponential');
@@ -363,14 +401,14 @@ function renderRuneList() {
       graphsHtml = exponentialStats.map((stat, sidx) =>
         `<div style="margin-top:12px;">
           <b>${stat.label}</b>
-          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:700px;height:220px;"></div>
+          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:400px;height:220px;"></div>
         </div>`
       ).join('');
     }
 
     return `<div class="output" style="margin-top:16px; text-align:left;">
       <b>${rune.name}</b> <span style="color:#aaa;">(1/${formatValue(rune.chance)})</span>
-      ${isInstant ? '<span style="color:#6f6;">Instant</span>' : ''}
+      ${isInstant ? '<span style="color:#6f6;">Instant</span>' : `<span style="color:#aaa;">Time to get: ${timeToGet}</span>`}
       <br><b>Bonuses:</b> ${formatBonuses(rune.bonuses)}
       ${graphsHtml}
     </div>`;
@@ -391,17 +429,15 @@ function renderRuneList() {
 
 document.getElementById('calculateBtn').addEventListener('click', function() {
   const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
-  const runeCloneResult = parseAbbreviatedNumber(document.getElementById('runeClone').value);
   const output = document.getElementById('output');
 
-  if (isNaN(rpsResult.value) || isNaN(runeCloneResult.value) || rpsResult.value <= 0 || runeCloneResult.value <= 0) {
-    output.textContent = 'Please enter valid positive numbers for RPS and Rune Clone.';
+  if (isNaN(rpsResult.value) || rpsResult.value <= 0) {
+    output.textContent = 'Please enter a valid positive number for RPS.';
     renderRuneList();
     return;
   }
 
-  const realRPS = rpsResult.value / runeCloneResult.value;
-  output.innerHTML = `<b>Real RPS: ${formatValue(realRPS, rpsResult.suffix || runeCloneResult.suffix)}</b>`;
+  output.textContent = `RPS: ${formatValue(rpsResult.value, rpsResult.suffix)}`;
   renderRuneList();
 });
 
