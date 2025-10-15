@@ -83,6 +83,8 @@ button:hover {
   text-align: center;
   color: #00d4ff;
   font-weight: 500;
+  outline: #050505;
+  outline-style: inset;
 }
 #runeList .output {
   background: #2a2a2a;
@@ -99,6 +101,28 @@ button:hover {
   margin: 8px 0 0 20px;
   padding: 0;
 }
+#rps, #runeClone {
+    color: rgb(255, 255, 255);
+    background-color: rgb(44, 44, 44);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(3, 3, 3, 0.4);
+    outline: #050505;
+    outline-style: solid;
+    
+}
+#hideInstantToggle, #showGraphsToggle {
+    background-color: #333333;
+    border-radius: 8px;
+    outline: #050505;
+    outline-style: inset;
+}
 #runeList li {
   margin-bottom: 4px;
+}
+#runeList .output {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#runeList .output:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(1, 1, 1, 1);
 }
