@@ -212,31 +212,31 @@ function formatTime(seconds) {
   const parts = [];
   const millenniums = Math.floor(seconds / 31536000000);
   if (millenniums > 0) {
-    parts.push(`${millenniums}M`);
+    parts.push(`~${millenniums}M`);
     seconds %= 31536000000;
   }
   const years = Math.floor(seconds / 31536000);
   if (years > 0) {
-    parts.push(`${years}y`);
+    parts.push(`~${years}y`);
     seconds %= 31536000;
   }
   const days = Math.floor(seconds / 86400);
   if (days > 0) {
-    parts.push(`${days}d`);
+    parts.push(`~${days}d`);
     seconds %= 86400;
   }
   const hours = Math.floor(seconds / 3600);
   if (hours > 0) {
-    parts.push(`${hours}h`);
+    parts.push(`~${hours}h`);
     seconds %= 3600;
   }
   const minutes = Math.floor(seconds / 60);
   if (minutes > 0) {
-    parts.push(`${minutes}m`);
+    parts.push(`~${minutes}m`);
     seconds %= 60;
   }
   if (seconds > 0) {
-    parts.push(`${Math.round(seconds)}s`);
+    parts.push(`~${Math.round(seconds)}s`);
   }
   return parts.join(' ');
 }
@@ -445,3 +445,4 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
+
