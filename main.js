@@ -10,7 +10,6 @@ const runeData = [
       '2x Rarity Speed (2x Max)'
     ],
     stats: [
-      { label: 'Energy', type: 'linear', values: [100, 200, 400, 800, 1600] },
       { label: 'Rarity Speed', type: 'linear', base: 1, growth: 2, cap: 2 }
     ]
   },
@@ -26,7 +25,6 @@ const runeData = [
       '1x Passive Luck (1x Max)'
     ],
     stats: [
-      { label: 'Energy', type: 'linear', values: [150, 300, 600, 1200, 2400] },
       { label: 'Passive Luck', type: 'linear', base: 1, growth: 1, cap: 1 }
     ]
   },
@@ -45,7 +43,6 @@ const runeData = [
       'Secret Upgrade'
     ],
     stats: [
-      { label: 'Energy', type: 'linear', values: [250, 500, 1000, 2000, 4000] },
       { label: 'Watts', type: 'linear', base: 0.5, growth: 1, cap: 10 },
       { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
       { label: 'Tree Damage', type: 'linear', base: 0.5, growth: 1, cap: 5 }
@@ -65,7 +62,6 @@ const runeData = [
       '2x Rune Speed (2x Max)'
     ],
     stats: [
-      { label: 'Energy', type: 'linear', values: [500, 1000, 2000, 4000, 8000] },
       { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
       { label: 'Passive Speed', type: 'linear', base: 2, growth: 1, cap: 2 },
       { label: 'Rune Speed', type: 'linear', base: 2, growth: 1, cap: 2 }
@@ -85,9 +81,8 @@ const runeData = [
       'Secret Stat'
     ],
     stats: [
-      { label: 'Energy', type: 'linear', values: [300, 600, 900, 1200, 1500] },
-      { label: 'Watts', type: 'exponential', base: 1, growth: 1.0000015, cap: 100000 },
-      { label: 'Wood', type: 'linear', base: 5, growth: 1, cap: 50 },
+      { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
       { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
     ]
   }
@@ -209,7 +204,7 @@ const suffixes = [
 ];
 
 function formatBonuses(bonuses) {
-  return `<ul>${bonuses.map(b => `<li>${b}</li>`).join('')}</ul>`;
+  return `<ul>${bonuses.map(b => `<li><code>${b}</code></li>`).join('')}</ul>`;
 }
 
 function drawExponentialGraph(id, stat) {
@@ -368,7 +363,7 @@ function renderRuneList() {
       graphsHtml = exponentialStats.map((stat, sidx) =>
         `<div style="margin-top:12px;">
           <b>${stat.label}</b>
-          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:400px;height:220px;"></div>
+          <div id="rune-graph-${idx}-${sidx}" style="width:100%;max-width:700px;height:220px;"></div>
         </div>`
       ).join('');
     }
