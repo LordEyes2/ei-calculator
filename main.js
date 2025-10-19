@@ -1,7 +1,7 @@
 const runeData = [
   {
     name: 'Eternal',
-    chance: 1000000,
+    chance: 1000000000,
     bonuses: [
       '100x Energy',
       '25x Flux',
@@ -15,7 +15,7 @@ const runeData = [
   },
   {
     name: 'Oblivion',
-    chance: 2500000,
+    chance: 2500000000,
     bonuses: [
       '150x Energy',
       '50x Flux',
@@ -30,7 +30,7 @@ const runeData = [
   },
   {
     name: 'Umbralith',
-    chance: 10000000,
+    chance: 10000000000,
     bonuses: [
       '250x Energy',
       '150x Flux',
@@ -50,7 +50,7 @@ const runeData = [
   },
   {
     name: 'Nuclear',
-    chance: 20000000,
+    chance: 20000000000,
     bonuses: [
       '500x Energy',
       '250x Flux',
@@ -69,7 +69,7 @@ const runeData = [
   },
   {
     name: 'Aero',
-    chance: 25000000,
+    chance: 25000000000,
     bonuses: [
       '300x Energy',
       '175x Flux',
@@ -445,5 +445,6 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
+
 
 
