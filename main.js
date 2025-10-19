@@ -85,6 +85,47 @@ const runeData = [
       { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
       { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
     ]
+  },
+  {
+    name: 'Gearheart',
+    chance: 100000000000,
+    bonuses: [
+      '1000x Energy',
+      '500x Flux',
+      '250x Surge',
+      '200x Voltage',
+      '5x Watts (50x Max)',
+      '1x EXP (1000x Max)',
+      '3x Cogs (30x Max)',
+      '2x Volts (2x Max)',
+      '5x Rarity Luck (50x Max)'
+    ],
+    stats: [
+      { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
+      { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
+    ]
+  },
+  {
+    name: 'Torsion',
+    chance: 1000000000000,
+    bonuses: [
+      '5000x Energy',
+      '1000x Flux',
+      '500x Surge',
+      '250x Voltage',
+      '10x Watts (100x Max)',
+      '1x EXP (1000x Max)',
+      '5x Cogs (50x Max)',
+      '5x Volts (5x Max)',
+      '4x Rarity Speed (4x Max)',
+      '25x Rarity Luck (250x Max)'
+    ],
+    stats: [
+      { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
+      { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
+    ]
   }
 ];
 
@@ -445,6 +486,5 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
-
 
 
