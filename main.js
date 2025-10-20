@@ -126,6 +126,26 @@ const runeData = [
       { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
       { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
     ]
+  },
+    {
+    name: 'Keymaster',
+    chance: 1000000000000000,
+    bonuses: [
+      `+3 Passive Keys (+3 Max)`,
+      '10000x Energy',
+      '2500x Flux',
+      '1000x Surge',
+      '500x Voltage',
+      '10x Cogs (100x Max)',
+      '2x EXP',
+      '1x Volts (5x Max)',
+      '2x Passive Luck (2x Max)'
+    ],
+    stats: [
+      { label: 'Watts', type: 'linear', base: 1, growth: 1, cap: 10 },
+      { label: 'Wood', type: 'linear', base: 5, growth: 5, cap: 50 },
+      { label: 'Clovers', type: 'linear', base: 1, growth: 1, cap: 10 }
+    ]
   }
 ];
 
