@@ -448,7 +448,7 @@ function renderRuneList() {
   const runeListDiv = document.getElementById('runeList');
   runeListDiv.innerHTML = runeData.map((rune, idx) => {
     let isInstant = false;
-    let timeToGet = 'N/A';
+    let timeToGet = '?';
     if (rps > 0) {
       const seconds = rune.chance / rps;
       timeToGet = formatTime(seconds);
@@ -507,6 +507,65 @@ document.getElementById('showGraphsToggle').addEventListener('change', renderRun
 
 renderRuneList();
 
+//\\ PASSIVES //\\
 
+const passiveData = [
+  { name: 'Clockwork', chance: 1000, bonuses: ['3x Stats', '3x Rune Luck', '3x Rune Speed', '+7 Rune Bulk', '+1 Rune Clone'] },
+  { name: 'Royal Flush', chance: 10000, bonuses: ['5x Stats', '5x Rune Luck', '4x Rune Speed', '+10 Rune Bulk', '+2 Rune Clone'] },
+  { name: 'Oracle', chance: 100000, bonuses: ['7.5x Stats', '7.5x Rune Luck', '5x Rune Speed', '5x Rarity Luck', '+15 Rune Bulk', '+3 Rune Clone'] },
+  { name: 'Galactic', chance: 1000000, bonuses: ['10x Stats', '10x Rune Luck', '7x Rune Speed', '10x Rarity Luck', '2x Rarity Speed', '+20 Rune Bulk', '+4 Rune Clone'] },
+  { name: 'Kitty Rebirth', chance: 5000000, bonuses: ['15x Stats', '15x Rune Luck', '10x Rune Speed', '15x Rarity Luck', '4x Rarity Speed', '+30 Rune Bulk', '+5 Rune Clone'] },
+  { name: 'Inferno', chance: 20000000, bonuses: ['25x Stats', '20x Rune Luck', '15x Rune Speed', '30x Rarity Luck', '5x Rarity Speed', '+50 Rune Bulk', '+6 Rune Clone'] }
+];
+
+function renderPassiveList() {
+  const passiveLuckResult = parseAbbreviatedNumber(document.getElementById('passiveLuck').value) || { value: 1, suffix: '' };
+  const hideInstant = document.getElementById('hidePassiveInstantToggle').checked;
+  const passiveListDiv = document.getElementById('passiveList');
+  passiveListDiv.innerHTML = passiveData.map((passive, idx) => {
+    let isInstant = false;
+    let newChance = '?';
+    if (passiveLuckResult.value > 0) {
+      const adjustedChance = passive.chance / passiveLuckResult.value;
+      newChance = formatValue(adjustedChance);
+      if (adjustedChance <= 1) isInstant = true;
+    }
+    if (hideInstant && isInstant) return '';
+
+    return `<div class="output" style="margin-top:16px; text-align:left;">
+      <b>${passive.name}</b> <span style="color:#aaa;">(1/${formatValue(passive.chance)})</span>
+      ${isInstant ? '<span style="color:#6f6;">Instant</span>' : `<span style="color:#aaa;">New Chance: 1/${newChance}</span>`}
+      <br><b>Bonuses:</b> ${formatBonuses(passive.bonuses)}
+    </div>`;
+  }).join('');
+}
+
+function openTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.classList.remove('active');
+  });
+  document.getElementById(tabName + '-tab').style.display = 'block';
+  event.currentTarget.classList.add('active');
+}
+
+document.getElementById('passiveCalculateBtn').addEventListener('click', function() {
+  const passiveLuckResult = parseAbbreviatedNumber(document.getElementById('passiveLuck').value);
+  const output = document.getElementById('passiveOutput');
+
+  if (isNaN(passiveLuckResult.value) || passiveLuckResult.value <= 0) {
+    output.textContent = 'Please enter a valid positive number for Passive Luck.';
+    renderPassiveList();
+    return;
+  }
+
+  output.textContent = `Passive Luck: ${formatValue(passiveLuckResult.value, passiveLuckResult.suffix)}`;
+  renderPassiveList();
+});
+
+document.getElementById('hidePassiveInstantToggle').addEventListener('change', renderPassiveList);
+renderPassiveList();
 
 
