@@ -569,3 +569,4 @@ document.getElementById('hidePassiveInstantToggle').addEventListener('change', r
 renderPassiveList();
 
 
+
