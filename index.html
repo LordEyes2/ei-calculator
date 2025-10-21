@@ -12,29 +12,49 @@
 <body>
   <div class="container">
     <h1>Rune Calculator</h1>
-    <div class="calculator">
-      <div class="inputs">
-        <label for="rps">RPS</label>
-        <input type="text" id="rps" min="0" step="any" placeholder="Enter RPS">
-         <!-- <label for="runeClone">Rune Clone</label> -->
-        <!-- <input type="text" id="runeClone" min="0" step="any" placeholder="Enter Rune Clone"> -->
-        <button id="calculateBtn">Calculate</button>
-     </div>
-      <div class="output" id="output"></div>
+    <div class="tab-buttons">
+      <button class="tab-button active" onclick="openTab('rune')">Rune Calculator</button>
+      <button class="tab-button" onclick="openTab('passive')">Passive Calculator</button>
     </div>
-    <div style="margin-top:32px; display: flex; gap: 24px; align-items: center;">
-      <label>
-        <input type="checkbox" id="hideInstantToggle">
-        Hide Instant
-      </label>
-      <label>
-        <input type="checkbox" id="showGraphsToggle" checked>
-        Show Graphs
-      </label>
+    <div class="tab-content" id="rune-tab">
+      <div class="calculator">
+        <div class="inputs">
+          <label for="rps">RPS</label>
+          <input type="text" id="rps" min="0" step="any" placeholder="Enter RPS">
+          <button id="calculateBtn">Calculate</button>
+        </div>
+        <div class="output" id="output"></div>
+      </div>
+      <div style="margin-top:32px; display: flex; gap: 24px; align-items: center;">
+        <label>
+          <input type="checkbox" id="hideInstantToggle">
+          Hide Instant
+        </label>
+        <label>
+          <input type="checkbox" id="showGraphsToggle" checked>
+          Show Graphs
+        </label>
+      </div>
+      <div id="runeList"></div>
     </div>
-    <div id="runeList"></div>
+    <div class="tab-content" id="passive-tab" style="display: none;">
+      <div class="calculator">
+        <div class="inputs">
+          <label for="passiveLuck">Passive Luck</label>
+          <input type="text" id="passiveLuck" min="0" step="any" placeholder="Enter Passive Luck">
+          <button id="passiveCalculateBtn">Calculate</button>
+        </div>
+        <div class="output" id="passiveOutput"></div>
+      </div>
+      <div style="margin-top:32px; display: flex; gap: 24px; align-items: center;">
+        <label>
+          <input type="checkbox" id="hidePassiveInstantToggle">
+          Hide Instant
+        </label>
+      </div>
+      <div id="passiveList"></div>
+    </div>
   </div>
-  <script src="main.js"></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
-
