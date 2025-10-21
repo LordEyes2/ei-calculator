@@ -137,7 +137,7 @@ const runeData = [
       '1000x Surge',
       '500x Voltage',
       '10x Cogs (100x Max)',
-      '2x EXP',
+      '2x EXP (200x Max)',
       '1x Volts (5x Max)',
       '2x Passive Luck (2x Max)'
     ],
@@ -506,5 +506,6 @@ document.getElementById('hideInstantToggle').addEventListener('change', renderRu
 document.getElementById('showGraphsToggle').addEventListener('change', renderRuneList);
 
 renderRuneList();
+
 
 
