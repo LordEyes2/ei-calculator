@@ -515,7 +515,9 @@ const passiveData = [
   { name: 'Oracle', chance: 100000, bonuses: ['7.5x Stats', '7.5x Rune Luck', '5x Rune Speed', '5x Rarity Luck', '+15 Rune Bulk', '+3 Rune Clone'] },
   { name: 'Galactic', chance: 1000000, bonuses: ['10x Stats', '10x Rune Luck', '7x Rune Speed', '10x Rarity Luck', '2x Rarity Speed', '+20 Rune Bulk', '+4 Rune Clone'] },
   { name: 'Kitty Rebirth', chance: 5000000, bonuses: ['15x Stats', '15x Rune Luck', '10x Rune Speed', '15x Rarity Luck', '4x Rarity Speed', '+30 Rune Bulk', '+5 Rune Clone'] },
-  { name: 'Inferno', chance: 20000000, bonuses: ['25x Stats', '20x Rune Luck', '15x Rune Speed', '30x Rarity Luck', '5x Rarity Speed', '+50 Rune Bulk', '+6 Rune Clone'] }
+  { name: 'Inferno', chance: 20000000, bonuses: ['25x Stats', '20x Rune Luck', '15x Rune Speed', '30x Rarity Luck', '5x Rarity Speed', '+50 Rune Bulk', '+6 Rune Clone'] },
+  { name: 'Monster', chance: 100000000, bonuses: ['45x Stats', '25x Rune Luck', '20x Rune Speed', '50x Rarity Luck', '6x Rarity Speed', '+75 Rune Bulk', '+7 Rune Clone'] },
+  { name: 'Prismatic', chance: 1000000000, bonuses: ['60x Stats', '30x Rune Luck', '25x Rune Speed', '75x Rarity Luck', '7x Rarity Speed', '+100 Rune Bulk', '+8 Rune Clone'] }
 ];
 
 function renderPassiveList() {
@@ -567,6 +569,5 @@ document.getElementById('passiveCalculateBtn').addEventListener('click', functio
 
 document.getElementById('hidePassiveInstantToggle').addEventListener('change', renderPassiveList);
 renderPassiveList();
-
 
 
