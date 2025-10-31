@@ -444,13 +444,24 @@ function renderRuneList() {
   const showGraphs = document.getElementById('showGraphsToggle').checked;
   const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
   const rps = rpsResult.value;
+  
+  const primordialLuckResult = parseAbbreviatedNumber(
+    document.getElementById('primordialLuck').value || '1'
+  );
+  const primordialLuck = primordialLuckResult.value;
 
   const runeListDiv = document.getElementById('runeList');
   runeListDiv.innerHTML = runeData.map((rune, idx) => {
     let isInstant = false;
     let timeToGet = '?';
+    let displayedChance = rune.chance;
+
+    if (rune.chance >= 1 && primordialLuck > 1) {
+      displayedChance = rune.chance / primordialLuck;
+    }
+
     if (rps > 0) {
-      const seconds = rune.chance / rps;
+      const seconds = displayedChance / rps;
       timeToGet = formatTime(seconds);
       if (seconds < 1) isInstant = true;
     }
@@ -468,7 +479,7 @@ function renderRuneList() {
     }
 
     return `<div class="output" style="margin-top:16px; text-align:left;">
-      <b>${rune.name}</b> <span style="color:#aaa;">(1/${formatValue(rune.chance)})</span>
+      <b>${rune.name}</b> <span style="color:#aaa;">(1/${formatValue(displayedChance)})</span>
       ${isInstant ? '<span style="color:#6f6;">Instant</span>' : `<span style="color:#aaa;">Time to get: ~${timeToGet}</span>`}
       <br><b>Bonuses:</b> ${formatBonuses(rune.bonuses)}
       ${graphsHtml}
@@ -490,15 +501,21 @@ function renderRuneList() {
 
 document.getElementById('calculateBtn').addEventListener('click', function() {
   const rpsResult = parseAbbreviatedNumber(document.getElementById('rps').value);
-  const output = document.getElementById('output');
+  const primordialLuckResult = parseAbbreviatedNumber(
+    document.getElementById('primordialLuck').value || '1'
+  );
 
   if (isNaN(rpsResult.value) || rpsResult.value <= 0) {
-    output.textContent = 'Please enter a valid positive number for RPS.';
+    document.getElementById('output').textContent = 'Please enter a valid positive number for RPS.';
     renderRuneList();
     return;
   }
 
-  output.textContent = `RPS: ${formatValue(rpsResult.value, rpsResult.suffix)}`;
+  const out = [`RPS: ${formatValue(rpsResult.value, rpsResult.suffix)}`];
+  if (primordialLuckResult.value > 1) {
+    out.push(`Primordial Luck: ${formatValue(primordialLuckResult.value, primordialLuckResult.suffix)}`);
+  }
+  document.getElementById('output').textContent = out.join(' | ');
   renderRuneList();
 });
 
